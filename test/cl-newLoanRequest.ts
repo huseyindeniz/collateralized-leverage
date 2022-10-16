@@ -103,7 +103,7 @@ describe("CollateralizedLeverage newLoanRequest", function () {
       .withArgs(fixture.addr1.address, minCollateralAmount, minPeriodInYears);
   });
 
-  it("Valid new request with barrower has a previous completed loan", async function () {
+  it("Valid new request with borrower has a previous completed loan", async function () {
     // Arrange
     const fixture = await loadFixture(deployLeverageFixture);
     await fixture.contractUnderTest.setVariable("loanRecords", {

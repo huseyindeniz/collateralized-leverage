@@ -62,9 +62,9 @@ describe("CollateralizedLeverage capture", function () {
   it("Valid capture", async function () {
     // Arrange
     const fixture = await loadFixture(deployLeverageFixture);
-    const barrower = fixture.addr1;
+    const borrower = fixture.addr1;
     const lender = fixture.daiOwner;
-    // send some ether to contract, so, contract can send eth to barrower
+    // send some ether to contract, so, contract can send eth to borrower
     const ethToSend = ethers.utils.parseEther("5.0");
     await fixture.owner.sendTransaction({
       to: fixture.contractUnderTest.address,
@@ -73,7 +73,7 @@ describe("CollateralizedLeverage capture", function () {
     // loan taken some time ago
     const THREE_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 12;
     await fixture.contractUnderTest.setVariable("loanRecords", {
-      [barrower.address]: {
+      [borrower.address]: {
         amount: minCollateralAmount,
         periodInYears: minPeriodInYears,
         startTime: fixture.block.timestamp - THREE_MONTHS_IN_SECONDS,
@@ -84,13 +84,13 @@ describe("CollateralizedLeverage capture", function () {
 
     const isCapturable = await fixture.contractUnderTest
       .connect(lender)
-      .isCapturable(barrower.address);
+      .isCapturable(borrower.address);
     expect(isCapturable).to.be.true;
 
     // Act
     const captureTx = await fixture.contractUnderTest
       .connect(lender)
-      .captureCollateral(barrower.address);
+      .captureCollateral(borrower.address);
     const captureRcpt = await captureTx.wait();
 
     // Assert
@@ -102,7 +102,7 @@ describe("CollateralizedLeverage capture", function () {
     );
     const loanRecord: ICollateralizedLeverage.LoanRecordStruct =
       (await fixture.contractUnderTest.getVariable("loanRecords", [
-        barrower.address,
+        borrower.address,
       ])) as ICollateralizedLeverage.LoanRecordStruct;
 
     expect(loanRecord.status).to.be.eq(LoanStatus.COMPLETED);
@@ -112,6 +112,6 @@ describe("CollateralizedLeverage capture", function () {
         fixture.contractUnderTest,
         fixture.contractUnderTest.interface.getEvent("LoanCaptured").name
       )
-      .withArgs(barrower.address, lender.address);
+      .withArgs(borrower.address, lender.address);
   });
 });

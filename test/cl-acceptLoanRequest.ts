@@ -12,17 +12,17 @@ describe("CollateralizedLeverage acceptLoanRequest", function () {
   it("Valid accept", async function () {
     // Arrange
     const fixture = await loadFixture(deployLeverageFixture);
-    const barrower = fixture.addr1;
+    const borrower = fixture.addr1;
     const lender = fixture.daiOwner;
     const lenderInitialDAIBalance = await fixture.daiContract.balanceOf(
       lender.address
     );
-    const barrowerInitialDAIBalance = await fixture.daiContract.balanceOf(
-      barrower.address
+    const borrowerInitialDAIBalance = await fixture.daiContract.balanceOf(
+      borrower.address
     );
 
     await fixture.contractUnderTest.setVariable("loanRecords", {
-      [barrower.address]: {
+      [borrower.address]: {
         amount: minCollateralAmount,
         status: LoanStatus.REQUESTED,
         periodInYears: minPeriodInYears,
@@ -41,7 +41,7 @@ describe("CollateralizedLeverage acceptLoanRequest", function () {
     // Act
     const acceptLoanRequestTx = await fixture.contractUnderTest
       .connect(lender)
-      .acceptLoanRequest(barrower.address);
+      .acceptLoanRequest(borrower.address);
     const acceptLoanRequestRcpt = await acceptLoanRequestTx.wait();
 
     // Assert
@@ -49,7 +49,7 @@ describe("CollateralizedLeverage acceptLoanRequest", function () {
 
     const loanRecord: ICollateralizedLeverage.LoanRecordStruct =
       (await fixture.contractUnderTest.getVariable("loanRecords", [
-        barrower.address,
+        borrower.address,
       ])) as ICollateralizedLeverage.LoanRecordStruct;
 
     expect(loanRecord.status).to.be.eq(LoanStatus.ACTIVE);
@@ -61,11 +61,11 @@ describe("CollateralizedLeverage acceptLoanRequest", function () {
     const lenderCurrentDAIBalance = await fixture.daiContract.balanceOf(
       lender.address
     );
-    const barrowerCurrentDAIBalance = await fixture.daiContract.balanceOf(
-      barrower.address
+    const borrowerCurrentDAIBalance = await fixture.daiContract.balanceOf(
+      borrower.address
     );
 
-    expect(barrowerCurrentDAIBalance.sub(barrowerInitialDAIBalance)).to.be.eq(
+    expect(borrowerCurrentDAIBalance.sub(borrowerInitialDAIBalance)).to.be.eq(
       requestedDaiAmount
     );
     expect(lenderInitialDAIBalance.sub(lenderCurrentDAIBalance)).to.be.eq(
@@ -77,6 +77,6 @@ describe("CollateralizedLeverage acceptLoanRequest", function () {
         fixture.contractUnderTest,
         fixture.contractUnderTest.interface.getEvent("LoanRequestAccepted").name
       )
-      .withArgs(barrower.address, lender.address);
+      .withArgs(borrower.address, lender.address);
   });
 });

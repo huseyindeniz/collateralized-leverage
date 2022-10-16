@@ -1,7 +1,7 @@
 @startuml scenario1
 autonumber
 
-title "Scenario 1: barrower pay debt before period ends"
+title "Scenario 1: borrower pay debt before period ends"
 
 actor Borrower
 participant DAIContract

@@ -9,11 +9,14 @@ interface ICollateralizedLeverage {
         uint256 period
     );
 
-    event LoanRequestAccepted(address indexed barrower, address indexed lender);
+    event LoanRequestAccepted(
+        address indexed _borrower,
+        address indexed lender
+    );
 
-    event LoanCompleted(address indexed barrower, address indexed requester);
+    event LoanCompleted(address indexed _borrower, address indexed requester);
 
-    event LoanCaptured(address indexed barrower, address indexed requester);
+    event LoanCaptured(address indexed _borrower, address indexed requester);
 
     enum LoanStatus {
         UNDEFINED,
@@ -42,12 +45,12 @@ interface ICollateralizedLeverage {
     // Lender Functions
     function acceptLoanRequest(address _requester) external; // done
 
-    function isCapturable(address _barrower) external view returns (bool); // done
+    function isCapturable(address _borrower) external view returns (bool); // done
 
-    function captureCollateral(address _barrower) external; // done
+    function captureCollateral(address _borrower) external; // done
 
     // Views
     function viewLoanRecord(
-        address _barrower // done
+        address _borrower // done
     ) external view returns (LoanRecord memory);
 }

@@ -43,9 +43,9 @@ describe("CollateralizedLeverage payDebt", function () {
   it("Valid payDebt", async function () {
     // Arrange
     const fixture = await loadFixture(deployLeverageFixture);
-    const barrower = fixture.addr1;
+    const borrower = fixture.addr1;
     const lender = fixture.daiOwner;
-    // send some ether to contract, so, contract can send eth to barrower
+    // send some ether to contract, so, contract can send eth to borrower
     const ethToSend = ethers.utils.parseEther("5.0");
     await fixture.owner.sendTransaction({
       to: fixture.contractUnderTest.address,
@@ -54,7 +54,7 @@ describe("CollateralizedLeverage payDebt", function () {
     // loan taken some time ago
     const THREE_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 3;
     await fixture.contractUnderTest.setVariable("loanRecords", {
-      [barrower.address]: {
+      [borrower.address]: {
         amount: minCollateralAmount,
         periodInYears: minPeriodInYears,
         startTime: fixture.block.timestamp - THREE_MONTHS_IN_SECONDS,
@@ -65,36 +65,36 @@ describe("CollateralizedLeverage payDebt", function () {
 
     // learn your current debt
     const currentDebt = await fixture.contractUnderTest
-      .connect(barrower)
+      .connect(borrower)
       .currentDebt();
-    // to be able to test the functionality, send dai to the barrower
+    // to be able to test the functionality, send dai to the borrower
     await fixture.daiContract
       .connect(fixture.daiOwner)
-      .transfer(barrower.address, currentDebt);
+      .transfer(borrower.address, currentDebt);
 
     // approve it in the dai contract
     const approveTx = await fixture.daiContract
-      .connect(barrower)
+      .connect(borrower)
       .approve(fixture.contractUnderTest.address, currentDebt);
     const approveRcpt = await approveTx.wait();
     expect(approveRcpt.status).to.be.eq(1);
 
     // Act
     const payDebtTx = await fixture.contractUnderTest
-      .connect(barrower)
+      .connect(borrower)
       .payDebt();
     const payDebtRcpt = await payDebtTx.wait();
 
     // Assert
     expect(payDebtRcpt.status).to.be.eq(1);
-    expect(payDebtTx).to.changeEtherBalance(barrower, minCollateralAmount);
+    expect(payDebtTx).to.changeEtherBalance(borrower, minCollateralAmount);
     expect(payDebtTx).to.changeEtherBalance(
       fixture.contractUnderTest,
       minCollateralAmount
     );
     const loanRecord: ICollateralizedLeverage.LoanRecordStruct =
       (await fixture.contractUnderTest.getVariable("loanRecords", [
-        barrower.address,
+        borrower.address,
       ])) as ICollateralizedLeverage.LoanRecordStruct;
 
     expect(loanRecord.status).to.be.eq(LoanStatus.COMPLETED);
@@ -104,6 +104,6 @@ describe("CollateralizedLeverage payDebt", function () {
         fixture.contractUnderTest,
         fixture.contractUnderTest.interface.getEvent("LoanCompleted").name
       )
-      .withArgs(barrower.address, lender.address);
+      .withArgs(borrower.address, lender.address);
   });
 });

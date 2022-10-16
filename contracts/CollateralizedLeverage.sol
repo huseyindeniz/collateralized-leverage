@@ -69,7 +69,7 @@ contract CollateralizedLeverage is Ownable, ICollateralizedLeverage {
         );
         require(success1, "not approved");
 
-        // send collateral to barrower
+        // send collateral to borrower
         (bool success2, ) = payable(msg.sender).call{value: _loanRecord.amount}(
             ""
         );
@@ -101,13 +101,13 @@ contract CollateralizedLeverage is Ownable, ICollateralizedLeverage {
         emit LoanRequestAccepted(_requester, msg.sender);
     }
 
-    function isCapturable(address _barrower)
+    function isCapturable(address _borrower)
         external
         view
         override
         returns (bool)
     {
-        LoanRecord storage _loanRecord = loanRecords[_barrower];
+        LoanRecord storage _loanRecord = loanRecords[_borrower];
         require(_loanRecord.lender == msg.sender, "not lender");
         require(
             _loanRecord.status == uint8(LoanStatus.ACTIVE),
@@ -121,8 +121,8 @@ contract CollateralizedLeverage is Ownable, ICollateralizedLeverage {
             );
     }
 
-    function captureCollateral(address _barrower) external override {
-        LoanRecord storage _loanRecord = loanRecords[_barrower];
+    function captureCollateral(address _borrower) external override {
+        LoanRecord storage _loanRecord = loanRecords[_borrower];
         require(_loanRecord.lender == msg.sender, "not lender");
         require(
             _loanRecord.status == uint8(LoanStatus.ACTIVE),
@@ -143,17 +143,17 @@ contract CollateralizedLeverage is Ownable, ICollateralizedLeverage {
             ""
         );
         require(success);
-        emit LoanCaptured(_barrower, msg.sender);
+        emit LoanCaptured(_borrower, msg.sender);
     }
 
     // Views
-    function viewLoanRecord(address _barrower)
+    function viewLoanRecord(address _borrower)
         external
         view
         override
         returns (LoanRecord memory)
     {
-        LoanRecord storage _loanRecord = loanRecords[_barrower];
+        LoanRecord storage _loanRecord = loanRecords[_borrower];
         return _loanRecord;
     }
 

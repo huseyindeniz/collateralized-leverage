@@ -63,6 +63,6 @@ Following hardcoded constants are set for simple demonstration.
 ## Notes
 
 - Warning: Owner of the contract is able to withdraw all balance including collateralized ethers.
-- Lender should approve DAI transfer in DAI contract before accepting a loan request. Normally this should be in the frontend of this app. But it's not exist yet. This is same for barrower. Barrower should approve DAI transfer in DAI contract before calling payDebt method.
-- Barrower and Lender knows each other. Better, async pool implementation where barrowers and lenders don't know each other will be implemented later.
+- Lender should approve DAI transfer in DAI contract before accepting a loan request. Normally this should be in the frontend of this app. But it's not exist yet. This is same for borrower. Borrower should approve DAI transfer in DAI contract before calling payDebt method.
+- Borrower and Lender knows each other. Better, async pool implementation where borrowers and lenders don't know each other will be implemented later.
 - ViewLoanRecord is added but it's useless. In a real pool version, ViewLoanRecords should be implemented effectively.
