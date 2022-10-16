@@ -7,8 +7,8 @@ dotenv.config();
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 if (!ALCHEMY_API_KEY) throw new Error("ALCHEMY_API_KEY required");
 
-// in order to deploy the goerli, uncomment following lines
-// don't forget to add you deployer wallet goerli private key to the .env file
+// in order to deploy to the goerli, uncomment the following lines
+// don't forget to add your deployer wallet goerli private key to the .env file
 
 //const GOERLI_PRIVATE_KEY = process.env.GOERLI_PRIVATE_KEY;
 //if (!GOERLI_PRIVATE_KEY) throw new Error("GOERLI_API_KEY required");
@@ -42,9 +42,6 @@ const config: HardhatUserConfig = {
       chainId: 5,
       url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
       //accounts: [GOERLI_PRIVATE_KEY],
-    },
-    ganache: {
-      url: "http://localhost:7545",
     },
   },
   // gasReporter: {

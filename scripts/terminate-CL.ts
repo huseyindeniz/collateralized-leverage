@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 async function main() {
   const [deployer] = await ethers.getSigners();
 
-  console.log("Deploying contracts with the account:", deployer.address);
+  console.log("Terminating contracts with the account:", deployer.address);
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
@@ -13,12 +13,12 @@ async function main() {
   const CLContract = CLContractFactory.attach("CONTRACT ADDRESS HERE");
 
   await CLContract.deployed();
-  console.log("CollateralizedLeverage deployed to:", CLContract.address);
+  console.log("CollateralizedLeverage was deployed to:", CLContract.address);
 
   const terminateTx = await CLContract.terminate();
   const terminateRcpt = await terminateTx.wait();
   if (terminateRcpt.status == 1) {
-    console.log("contract terminated");
+    console.log("CollateralizedLeverage contract terminated");
   } else {
     console.log(terminateTx);
     console.log(terminateRcpt);

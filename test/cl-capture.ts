@@ -70,13 +70,13 @@ describe("CollateralizedLeverage capture", function () {
       to: fixture.contractUnderTest.address,
       value: ethToSend,
     });
-    // loan taken some time ago
-    const THREE_MONTHS_IN_SECONDS = 60 * 60 * 24 * 30 * 12;
+    // loan taken too long ago, delayed loan
+    const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 30 * 12;
     await fixture.contractUnderTest.setVariable("loanRecords", {
       [borrower.address]: {
         amount: minCollateralAmount,
         periodInYears: minPeriodInYears,
-        startTime: fixture.block.timestamp - THREE_MONTHS_IN_SECONDS,
+        startTime: fixture.block.timestamp - ONE_YEAR_IN_SECONDS,
         status: LoanStatus.ACTIVE,
         lender: lender.address,
       },
