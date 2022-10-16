@@ -1,0 +1,12 @@
+@startuml state
+
+title "State Daigram of single LoanRecord"
+
+[*] --> UNDEFINED
+UNDEFINED --> REQUESTED: newLoanRequest
+REQUESTED --> ACTIVE: acceptLoanRequest
+ACTIVE --> COMPLETED: payDebt
+ACTIVE --> COMPLETED: captureCollateral
+COMPLETED --> REQUESTED: newLoanRequest
+
+@enduml

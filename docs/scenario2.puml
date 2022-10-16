@@ -1,0 +1,25 @@
+@startuml scenario2
+autonumber
+
+title "Scenario 2: barrower didn't pay debt before period ends"
+
+actor Borrower
+participant DAIContract
+participant CollateralizedLeverage as CLContract
+actor Lender
+
+Borrower -> CLContract: newLoanRequest(collateralAmount in ETH)
+Borrower -> Lender: address (via whatsapp, discord, email phone etc :D )
+Lender -> CLContract: viewLoanRecord(address)
+CLContract --> Lender: requestedAmountInDAI (half worth of collateralAmount in DAI)
+Lender -> DAIContract: approve(CLContract address, requestedAmountInDAI)
+Lender -> CLContract: acceptLoanRequest(address)
+CLContract -> DAIContract: transferFrom(lender, borrower, requestedAmountInDAI)
+DAIContract -> Borrower: transfer(requestedAmountInDAI)
+...
+Lender -> CLContract: isCapturable(address)
+CLContract --> Lender: true
+Lender -> CLContract: captureCollateral(address)
+CLContract --> Lender: collateralAmount in ETH
+
+@enduml
